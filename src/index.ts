@@ -1,3 +1,3 @@
-const n = true
+const n = true;
 
-console.log(n)
+console.log(n);
