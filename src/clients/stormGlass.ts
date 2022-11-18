@@ -1,4 +1,6 @@
-import { AxiosStatic } from 'axios';
+import { InternalError } from '@src/util/errors/internal-error';
+import config, { IConfig } from 'config';
+import * as HTTPUtil from '@src/util/request';
 
 export interface StormGlassPointSource {
   readonly [key: string]: number;
@@ -30,25 +32,62 @@ export interface ForecastPoint {
   windSpeed: number;
 }
 
+export class ClientRequestError extends InternalError {
+  constructor(message: string) {
+    const internalMessage =
+      'Unexpected error when trying to communicate to StormGlass';
+    super(`${internalMessage}: ${message}`);
+  }
+}
+
+export class StormGlassResponseError extends InternalError {
+  constructor(message: string) {
+    const internalMessage =
+      'Unexpected error returned by the StormGlass service';
+    super(`${internalMessage}: ${message}`);
+  }
+}
+
+const stormGlassResourceConfig: IConfig = config.get(
+  'App.resources.StormGlass'
+);
+
 export class StormGlass {
   readonly stormGlassAPIParams =
     'swellDirection,swellHeight,swellPeriod,waveDirection,waveHeight,windDirection,windSpeed';
 
   readonly stormGlassAPISource = 'noaa';
 
-  constructor(protected request: AxiosStatic) {}
+  constructor(protected request = new HTTPUtil.Request()) {}
 
   public async fetchPoints(lat: number, lng: number): Promise<ForecastPoint[]> {
-    const { data } = await this.request.get<StormGlassForecastResponse>(
-      `https://api.stormglass.io/v2/weather/point?lat=${lat}&lng=${lng}&params=${this.stormGlassAPIParams}&source=${this.stormGlassAPISource}`,
-      {
-        headers: {
-          authorization: 'fake-token',
-        },
-      }
-    );
+    const url = stormGlassResourceConfig.get<string>('apiUrl');
+    const token = stormGlassResourceConfig.get<string>('apiToken');
 
-    return this.normalizeResponse(data);
+    try {
+      const { data } = await this.request.get<StormGlassForecastResponse>(
+        `${url}/weather/point?lat=${lat}&lng=${lng}&params=${this.stormGlassAPIParams}&source=${this.stormGlassAPISource}`,
+        {
+          headers: {
+            authorization: token,
+          },
+        }
+      );
+
+      return this.normalizeResponse(data);
+    } catch (err: any) {
+      const message: string = err?.message;
+      const status: number = err?.response?.status;
+      const data: object = err?.response?.data;
+
+      if (HTTPUtil.Request.isRequestError(err)) {
+        throw new StormGlassResponseError(
+          `Error: ${JSON.stringify(data)} Code: ${status}`
+        );
+      }
+
+      throw new ClientRequestError(message);
+    }
   }
 
   private normalizeResponse(
