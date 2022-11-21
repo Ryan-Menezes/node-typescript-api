@@ -1,4 +1,5 @@
 import { ForecastPoint, StormGlass } from '@src/clients/stormGlass';
+import { InternalError } from '@src/util/errors/internal-error';
 
 export enum BeachPosition {
   S = 'S',
@@ -17,6 +18,12 @@ export interface Beach {
 
 export interface BeachForecast extends Omit<Beach, 'user'>, ForecastPoint {}
 
+export class ForecastProcessingInternalError extends InternalError {
+  constructor(message: string) {
+    super(`Unexpected error during the forecast processing: ${message}`);
+  }
+}
+
 export interface TimeForecast {
   time: string;
   forecast: BeachForecast[];
@@ -28,23 +35,33 @@ export class Forecast {
   public async processForecastForBeaches(beaches: Beach[]): Promise<TimeForecast[]> {
     const pointsWithCorrectsSources: BeachForecast[] = [];
 
-    for (const beach of beaches) {
-      const points = await this.stormGlass.fetchPoints(beach.lat, beach.lng);
-      const enrichedBeachData = points.map(point => ({
-        ...{
-          lat: beach.lat,
-          lng: beach.lng,
-          name: beach.name,
-          position: beach.position,
-          rating: 1,
-        },
-        ...point,
-      }));
+    try {
+      for (const beach of beaches) {
+        const points = await this.stormGlass.fetchPoints(beach.lat, beach.lng);
+        const enrichedBeachData = this.enrichedBeachData(points, beach);
 
-      pointsWithCorrectsSources.push(...enrichedBeachData);
+        pointsWithCorrectsSources.push(...enrichedBeachData);
+      }
+
+      return this.mapForecastByTime(pointsWithCorrectsSources);
+    } catch (error: any) {
+      throw new ForecastProcessingInternalError(error?.message);
     }
+  }
 
-    return this.mapForecastByTime(pointsWithCorrectsSources);
+  private enrichedBeachData(points: ForecastPoint[], beach: Beach): BeachForecast[] {
+    const enrichedBeachData = points.map(point => ({
+      ...{
+        lat: beach.lat,
+        lng: beach.lng,
+        name: beach.name,
+        position: beach.position,
+        rating: 1,
+      },
+      ...point,
+    }));
+
+    return enrichedBeachData;
   }
 
   private mapForecastByTime(forecast: BeachForecast[]): TimeForecast[] {
