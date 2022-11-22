@@ -66,5 +66,7 @@ module.exports = {
       allowAny: false,
       allowRuleToRunWithoutStrictNullChecksIKnowWhatIAmDoing: false,
     }],
+    'no-redeclare': 'off',
+    '@typescript-eslint/no-redeclare': 'off',
   }
 }

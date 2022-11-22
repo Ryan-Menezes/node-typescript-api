@@ -10,5 +10,4 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await server.close();
-  console.log('OK');
 });

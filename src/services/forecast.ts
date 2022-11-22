@@ -5,7 +5,7 @@ export enum BeachPosition {
   S = 'S',
   E = 'E',
   W = 'W',
-  N = 'N'
+  N = 'N',
 }
 
 export interface Beach {
@@ -32,7 +32,9 @@ export interface TimeForecast {
 export class Forecast {
   constructor(protected stormGlass = new StormGlass()) {}
 
-  public async processForecastForBeaches(beaches: Beach[]): Promise<TimeForecast[]> {
+  public async processForecastForBeaches(
+    beaches: Beach[]
+  ): Promise<TimeForecast[]> {
     const pointsWithCorrectsSources: BeachForecast[] = [];
 
     try {
@@ -49,8 +51,11 @@ export class Forecast {
     }
   }
 
-  private enrichedBeachData(points: ForecastPoint[], beach: Beach): BeachForecast[] {
-    const enrichedBeachData = points.map(point => ({
+  private enrichedBeachData(
+    points: ForecastPoint[],
+    beach: Beach
+  ): BeachForecast[] {
+    const enrichedBeachData = points.map((point) => ({
       ...{
         lat: beach.lat,
         lng: beach.lng,
@@ -68,7 +73,7 @@ export class Forecast {
     const forecastByTime: TimeForecast[] = [];
 
     for (const point of forecast) {
-      const timePoint = forecastByTime.find(f => f.time === point.time);
+      const timePoint = forecastByTime.find((f) => f.time === point.time);
 
       if (timePoint) {
         timePoint.forecast.push(point);
