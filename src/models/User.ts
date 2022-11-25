@@ -1,37 +1,26 @@
 import mongoose, { Document, Model } from 'mongoose';
 
-export enum BeachPosition {
-  S = 'S',
-  E = 'E',
-  W = 'W',
-  N = 'N',
-}
-
-export interface Beach {
+export interface User {
   _id?: string;
-  lat: number;
-  lng: number;
   name: string;
-  position: BeachPosition;
+  email: string;
+  password: string;
 }
 
-interface BeachModel extends Omit<Beach, '_id'>, Document {}
+interface UserModel extends Omit<User, '_id'>, Document {}
 
 const schema = new mongoose.Schema(
   {
-    lat: {
-      type: Number,
-      required: true,
-    },
-    lng: {
-      type: Number,
-      required: true,
-    },
     name: {
       type: String,
       required: true,
     },
-    position: {
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    password: {
       type: String,
       required: true,
     },
@@ -47,7 +36,7 @@ const schema = new mongoose.Schema(
   }
 );
 
-export const Beach: Model<BeachModel> = mongoose.model<BeachModel>(
-  'Beach',
+export const User: Model<UserModel> = mongoose.model<UserModel>(
+  'User',
   schema
 );

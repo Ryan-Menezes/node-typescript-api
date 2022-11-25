@@ -1,17 +1,17 @@
 import { Controller, Post } from '@overnightjs/core';
-import { Beach } from '@src/models/Beach';
 import { Request, Response } from 'express';
+import { User } from '@src/models/User';
 import mongoose from 'mongoose';
 
-@Controller('beaches')
-export class BeachesController {
+@Controller('users')
+export class UsersController {
   @Post('')
   public async create(req: Request, res: Response): Promise<void> {
     try {
-      const beach = new Beach(req.body);
-      const newBeach = await beach.save();
+      const user = new User(req.body);
+      const newUser = await user.save();
 
-      res.status(201).send(newBeach);
+      res.status(201).send(newUser);
     } catch (error) {
       if (error instanceof mongoose.Error.ValidationError) {
         res.status(422).send({
