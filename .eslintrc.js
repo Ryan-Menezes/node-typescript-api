@@ -68,5 +68,6 @@ module.exports = {
     }],
     'no-redeclare': 'off',
     '@typescript-eslint/no-redeclare': 'off',
+    "@typescript-eslint/no-extraneous-class": "off"
   }
 }
