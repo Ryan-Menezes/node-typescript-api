@@ -1,4 +1,4 @@
-name: Complete WorkFlow
+name: Complete workflow
 
 on:
   push:
@@ -36,7 +36,7 @@ jobs:
         run: npm ci --ignore-scripts
 
       - name: Run all tests
-        run: npm run test
+        run: npm run test:workflow
 
       - name: Deploy application
         if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' }}

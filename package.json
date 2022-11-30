@@ -12,6 +12,7 @@
     "style:check": "npx prettier --check src/**/*.ts test/**/*.ts",
     "style:fix": "npx prettier --write src/**/*.ts test/**/*.ts",
     "test": "npm run test:unit && npm run test:functional",
+    "test:workflow": "npm run test -- --forceExit --detectOpenHandles",
     "test:unit": "jest",
     "test:functional": "jest --projects ./test --runInBand"
   },
