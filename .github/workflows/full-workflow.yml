@@ -36,7 +36,7 @@ jobs:
         run: npm ci --ignore-scripts
 
       - name: Run all tests
-        run: npm run test:workflow
+        run: npm run test
 
       - name: Deploy application
         if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' }}
