@@ -11,7 +11,10 @@ const forecast = new Forecast();
 @ClassMiddleware(authMiddleware)
 export class ForecastController extends BaseController {
   @Get('')
-  public async getForecastForLoggedUser(req: Request, res: Response): Promise<void> {
+  public async getForecastForLoggedUser(
+    req: Request,
+    res: Response
+  ): Promise<void> {
     try {
       const beaches = await Beach.find({
         user: req.decoded?.id,

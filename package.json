@@ -11,7 +11,7 @@
     "lint:fix": "npx eslint ./src ./test --ext .ts --fix",
     "style:check": "npx prettier --check src/**/*.ts test/**/*.ts",
     "style:fix": "npx prettier --write src/**/*.ts test/**/*.ts",
-    "test": "npm run test:unit && npm run test:functional",
+    "test": "npm run style:check && npm run lint && npm run test:unit && npm run test:functional",
     "test:unit": "jest --forceExit --detectOpenHandles",
     "test:functional": "jest --projects ./test --runInBand"
   },

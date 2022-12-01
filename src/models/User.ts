@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/comma-dangle */
 import mongoose, { Document, Model } from 'mongoose';
 import AuthService from '@src/services/auth';
 import logger from '@src/logger';
@@ -42,10 +43,14 @@ const schema = new mongoose.Schema(
   }
 );
 
-schema.path('email').validate(async (email: string) => {
-  const emailCount = await mongoose.models.User.countDocuments({ email });
-  return !emailCount;
-}, 'already exists in the database.', CustomValidation.DUPLICATED);
+schema.path('email').validate(
+  async (email: string) => {
+    const emailCount = await mongoose.models.User.countDocuments({ email });
+    return !emailCount;
+  },
+  'already exists in the database.',
+  CustomValidation.DUPLICATED
+);
 
 schema.pre<UserModel>('save', async function (): Promise<void> {
   if (!this.password || !this.isModified('password')) {
@@ -60,7 +65,4 @@ schema.pre<UserModel>('save', async function (): Promise<void> {
   }
 });
 
-export const User: Model<UserModel> = mongoose.model<UserModel>(
-  'User',
-  schema
-);
+export const User: Model<UserModel> = mongoose.model<UserModel>('User', schema);

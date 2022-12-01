@@ -7,10 +7,7 @@ import AuthService from '@src/services/auth';
 @Controller('users')
 export class UsersController extends BaseController {
   @Post('')
-  public async create(
-    req: Request,
-    res: Response
-  ): Promise<void> {
+  public async create(req: Request, res: Response): Promise<void> {
     try {
       const user = new User(req.body);
       const newUser = await user.save();
@@ -22,10 +19,7 @@ export class UsersController extends BaseController {
   }
 
   @Post('authenticate')
-  public async authenticate(
-    req: Request,
-    res: Response
-  ): Promise<Response> {
+  public async authenticate(req: Request, res: Response): Promise<Response> {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });

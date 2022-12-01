@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ForecastPoint, StormGlass } from '@src/clients/stormGlass';
 import logger from '@src/logger';
 import { Beach } from '@src/models/Beach';

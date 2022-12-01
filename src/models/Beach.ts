@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/comma-dangle */
 import mongoose, { Document, Model, Schema } from 'mongoose';
 
 export enum BeachPosition {

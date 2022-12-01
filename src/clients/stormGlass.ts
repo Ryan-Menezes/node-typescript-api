@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { InternalError } from '@src/util/errors/internal-error';
 import config, { IConfig } from 'config';
 import * as HTTPUtil from '@src/util/request';

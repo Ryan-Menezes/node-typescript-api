@@ -19,10 +19,12 @@ describe('Users functional tests', () => {
         .send(newUser);
 
       expect(status).toBe(201);
-      expect(body).toEqual(expect.objectContaining({
-        ...newUser,
-        password: expect.any(String),
-      }));
+      expect(body).toEqual(
+        expect.objectContaining({
+          ...newUser,
+          password: expect.any(String),
+        })
+      );
       await expect(
         AuthService.comparePassword(newUser.password, body.password)
       ).resolves.toBeTruthy();

@@ -21,12 +21,13 @@ export abstract class BaseController {
     }
   }
 
-  private handleClientErrors(
-    error: mongoose.Error.ValidationError
-  ): { code: number; error: string } {
-    const duplicatedFindErrors = Object
-      .values(error.errors)
-      .filter(err => err.kind === CustomValidation.DUPLICATED);
+  private handleClientErrors(error: mongoose.Error.ValidationError): {
+    code: number;
+    error: string;
+  } {
+    const duplicatedFindErrors = Object.values(error.errors).filter(
+      (err) => err.kind === CustomValidation.DUPLICATED
+    );
 
     if (duplicatedFindErrors.length) {
       return {
