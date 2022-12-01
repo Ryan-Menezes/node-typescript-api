@@ -43,7 +43,8 @@ describe('Users functional tests', () => {
       expect(status).toBe(422);
       expect(body).toEqual({
         code: 422,
-        error: 'User validation failed: name: Path `name` is required.',
+        error: 'Unprocessable Entity',
+        message: 'User validation failed: name: Path `name` is required.',
       });
     });
 
@@ -62,7 +63,9 @@ describe('Users functional tests', () => {
       expect(status).toBe(409);
       expect(body).toEqual({
         code: 409,
-        error: 'User validation failed: email: already exists in the database.',
+        error: 'Conflict',
+        message:
+          'User validation failed: email: already exists in the database.',
       });
     });
 
@@ -103,7 +106,8 @@ describe('Users functional tests', () => {
       expect(status).toBe(401);
       expect(body).toEqual({
         code: 401,
-        error: 'User not found!',
+        error: 'Unauthorized',
+        message: 'User not found!',
       });
     });
 
@@ -124,7 +128,8 @@ describe('Users functional tests', () => {
       expect(status).toBe(401);
       expect(body).toEqual({
         code: 401,
-        error: 'Password is not match!',
+        error: 'Unauthorized',
+        message: 'Password is not match!',
       });
     });
   });

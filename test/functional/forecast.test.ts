@@ -82,7 +82,8 @@ describe('Beach forecast functional tests', () => {
     expect(status).toBe(500);
     expect(body).toEqual({
       code: 500,
-      error: 'Something went wrong!',
+      error: 'Internal Server Error',
+      message: 'Something went wrong!',
     });
   });
 });

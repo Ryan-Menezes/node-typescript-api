@@ -2,6 +2,7 @@ import { Response } from 'express';
 import mongoose from 'mongoose';
 import { CustomValidation } from '@src/models/User';
 import logger from '@src/logger';
+import ApiError, { APIError } from '@src/util/errors/api-error';
 
 export abstract class BaseController {
   protected sendCreatedUpdateErrorResponse(
@@ -10,21 +11,18 @@ export abstract class BaseController {
   ): void {
     if (error instanceof mongoose.Error.ValidationError) {
       const clientErrors = this.handleClientErrors(error);
-      res.status(clientErrors.code).send(clientErrors);
+      this.sendErrorResponse(res, clientErrors);
     } else {
       logger.error(error);
 
-      res.status(500).send({
+      this.sendErrorResponse(res, {
         code: 500,
-        error: 'Something went wrong!',
+        message: 'Something went wrong!',
       });
     }
   }
 
-  private handleClientErrors(error: mongoose.Error.ValidationError): {
-    code: number;
-    error: string;
-  } {
+  private handleClientErrors(error: mongoose.Error.ValidationError): APIError {
     const duplicatedFindErrors = Object.values(error.errors).filter(
       (err) => err.kind === CustomValidation.DUPLICATED
     );
@@ -32,13 +30,17 @@ export abstract class BaseController {
     if (duplicatedFindErrors.length) {
       return {
         code: 409,
-        error: error?.message,
+        message: error?.message,
       };
     }
 
     return {
       code: 422,
-      error: error?.message,
+      message: error?.message,
     };
+  }
+
+  protected sendErrorResponse(res: Response, apiError: APIError): Response {
+    return res.status(apiError.code).send(ApiError.format(apiError));
   }
 }

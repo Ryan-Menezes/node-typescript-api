@@ -23,7 +23,10 @@ export class ForecastController extends BaseController {
 
       res.status(200).json(forecastData);
     } catch (error) {
-      this.sendCreatedUpdateErrorResponse(res, error);
+      this.sendErrorResponse(res, {
+        code: 500,
+        message: 'Something went wrong!',
+      });
     }
   }
 }

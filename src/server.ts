@@ -5,6 +5,7 @@ import { ForecastController } from './controllers/forecast';
 import { BeachesController } from './controllers/beaches';
 import { UsersController } from './controllers/users';
 import * as database from '@src/database';
+import cors from 'cors';
 import logger from './logger';
 
 export class SetupServer extends Server {
@@ -20,6 +21,11 @@ export class SetupServer extends Server {
 
   private setupExpress(): void {
     this.app.use(json());
+    this.app.use(
+      cors({
+        origin: '*',
+      })
+    );
   }
 
   private setupControllers(): void {

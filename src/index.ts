@@ -22,7 +22,7 @@ process.on('unhandledRejection', (reason, promise) => {
   throw reason;
 });
 
-process.on('uncaughtException', error => {
+process.on('uncaughtException', (error) => {
   logger.error(`App exiting due to an uncaught exception: ${error.message}`);
   process.exit(ExitStatus.Failure);
 });
