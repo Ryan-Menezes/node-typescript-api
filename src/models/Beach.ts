@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/comma-dangle */
 import mongoose, { Document, Model, Schema } from 'mongoose';
 
-export enum BeachPosition {
+export enum GeoPosition {
   S = 'S',
   E = 'E',
   W = 'W',
@@ -13,7 +13,7 @@ export interface Beach {
   lat: number;
   lng: number;
   name: string;
-  position: BeachPosition;
+  position: GeoPosition;
   user: string;
 }
 
