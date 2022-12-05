@@ -40,10 +40,10 @@ describe('Users functional tests', () => {
         .post('/users')
         .send(newUser);
 
-      expect(status).toBe(422);
+      expect(status).toBe(400);
       expect(body).toEqual({
-        code: 422,
-        error: 'Unprocessable Entity',
+        code: 400,
+        error: 'Bad Request',
         message: 'User validation failed: name: Path `name` is required.',
       });
     });

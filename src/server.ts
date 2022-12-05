@@ -1,12 +1,16 @@
 import './util/module-alias';
 import { Server } from '@overnightjs/core';
 import { Application, json } from 'express';
-import { ForecastController } from './controllers/forecast';
-import { BeachesController } from './controllers/beaches';
-import { UsersController } from './controllers/users';
+import { ForecastController } from '@src/controllers/forecast';
+import { BeachesController } from '@src/controllers/beaches';
+import { UsersController } from '@src/controllers/users';
 import * as database from '@src/database';
+import apiSchema from '@src/api-schema.json';
 import cors from 'cors';
-import logger from './logger';
+import logger from '@src/logger';
+import swaggerUi from 'swagger-ui-express';
+import * as OpenApiValidator from 'express-openapi-validator';
+import { OpenAPIV3 } from 'express-openapi-validator/dist/framework/types';
 
 export class SetupServer extends Server {
   constructor(private readonly port = 3000) {
@@ -15,6 +19,7 @@ export class SetupServer extends Server {
 
   public async init(): Promise<void> {
     this.setupExpress();
+    this.docsSetup();
     this.setupControllers();
     await this.setupDatabase();
   }
@@ -42,6 +47,17 @@ export class SetupServer extends Server {
 
   private async setupDatabase(): Promise<void> {
     await database.connect();
+  }
+
+  private docsSetup(): void {
+    this.app.use('/docs', swaggerUi.serve, swaggerUi.setup(apiSchema));
+    this.app.use(
+      OpenApiValidator.middleware({
+        apiSpec: apiSchema as OpenAPIV3.Document,
+        validateRequests: true,
+        validateResponses: true,
+      })
+    );
   }
 
   public start(): void {
