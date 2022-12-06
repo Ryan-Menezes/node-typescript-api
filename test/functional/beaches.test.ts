@@ -61,8 +61,31 @@ describe.only('Beaches functional tests', () => {
       });
     });
 
-    it.skip('should return 500 when there is an error other than validation error', async () => {
-      // TODO
+    it('should return 500 when there is an error other than validation error', async () => {
+      jest.spyOn(Beach.prototype, 'save').mockImplementationOnce(async () => {
+        await Promise.reject('fail to create beach');
+      });
+
+      const newBeach = {
+        lat: -33.792726,
+        lng: 151.289824,
+        name: 'Manly',
+        position: 'E',
+      };
+
+      const { status, body } = await global.testRequest
+        .post('/beaches')
+        .set({
+          'x-access-token': token,
+        })
+        .send(newBeach);
+
+      expect(status).toBe(500);
+      expect(body).toEqual({
+        code: 500,
+        error: 'Internal Server Error',
+        message: 'Something went wrong!',
+      });
     });
   });
 });

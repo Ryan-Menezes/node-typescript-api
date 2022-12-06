@@ -69,8 +69,27 @@ describe('Users functional tests', () => {
       });
     });
 
-    it.skip('should return 500 when there is an error other than validation error', async () => {
-      // TODO
+    it('should return 500 when there is an error other than validation error', async () => {
+      jest.spyOn(User.prototype, 'save').mockImplementationOnce(async () => {
+        await Promise.reject('fail to create user');
+      });
+
+      const newUser = {
+        name: 'João Doe',
+        email: 'john@mail.com',
+        password: '1234',
+      };
+
+      const { status, body } = await global.testRequest
+        .post('/users')
+        .send(newUser);
+
+      expect(status).toBe(500);
+      expect(body).toEqual({
+        code: 500,
+        error: 'Internal Server Error',
+        message: 'Something went wrong!',
+      });
     });
   });
 
