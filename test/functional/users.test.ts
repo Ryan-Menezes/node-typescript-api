@@ -48,7 +48,7 @@ describe('Users functional tests', () => {
       });
     });
 
-    it('should return 409 when the email already exists', async () => {
+    it('should return 400 when the email already exists', async () => {
       const newUser = {
         name: 'João Doe',
         email: 'john@mail.com',
@@ -60,10 +60,10 @@ describe('Users functional tests', () => {
         .post('/users')
         .send(newUser);
 
-      expect(status).toBe(409);
+      expect(status).toBe(400);
       expect(body).toEqual({
-        code: 409,
-        error: 'Conflict',
+        code: 400,
+        error: 'Bad Request',
         message:
           'User validation failed: email: already exists in the database.',
       });

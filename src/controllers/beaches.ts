@@ -2,21 +2,24 @@ import { Controller, Post, ClassMiddleware } from '@overnightjs/core';
 import { Request, Response } from 'express';
 import { authMiddleware } from '@src/middlewares/auth';
 import { BaseController } from '@src/controllers/index';
-import { Beach } from '@src/models/Beach';
+import { BeachRepository } from '@src/repositories';
 
 @Controller('beaches')
 @ClassMiddleware(authMiddleware)
 export class BeachesController extends BaseController {
+  constructor(private readonly beachRepository: BeachRepository) {
+    super();
+  }
+
   @Post('')
   public async create(req: Request, res: Response): Promise<void> {
     try {
-      const beach = new Beach({
+      const beach = await this.beachRepository.create({
         ...req.body,
         user: req.decoded?.id,
       });
-      const newBeach = await beach.save();
 
-      res.status(201).send(newBeach);
+      res.status(201).send(beach);
     } catch (error) {
       this.sendCreatedUpdateErrorResponse(res, error);
     }

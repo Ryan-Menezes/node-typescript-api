@@ -1,15 +1,17 @@
 import { Response } from 'express';
-import mongoose from 'mongoose';
-import { CustomValidation } from '@src/models/User';
 import logger from '@src/logger';
 import ApiError, { APIError } from '@src/util/errors/api-error';
+import {
+  DatabaseError,
+  DatabaseValidationError,
+} from '@src/repositories/repository';
 
 export abstract class BaseController {
   protected sendCreatedUpdateErrorResponse(
     res: Response,
     error: unknown
   ): void {
-    if (error instanceof mongoose.Error.ValidationError) {
+    if (error instanceof DatabaseValidationError) {
       const clientErrors = this.handleClientErrors(error);
       this.sendErrorResponse(res, clientErrors);
     } else {
@@ -22,21 +24,10 @@ export abstract class BaseController {
     }
   }
 
-  private handleClientErrors(error: mongoose.Error.ValidationError): APIError {
-    const duplicatedFindErrors = Object.values(error.errors).filter(
-      (err) => err.kind === CustomValidation.DUPLICATED
-    );
-
-    if (duplicatedFindErrors.length) {
-      return {
-        code: 409,
-        message: error?.message,
-      };
-    }
-
+  private handleClientErrors(error: DatabaseError): APIError {
     return {
       code: 400,
-      message: error?.message,
+      message: error.message,
     };
   }
 

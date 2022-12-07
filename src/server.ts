@@ -12,6 +12,8 @@ import swaggerUi from 'swagger-ui-express';
 import * as OpenApiValidator from 'express-openapi-validator';
 import { OpenAPIV3 } from 'express-openapi-validator/dist/framework/types';
 import { apiErrorValidator } from '@src/middlewares/api-error-validator';
+import { BeachMongoDBRepository } from '@src/repositories/beachMongoDBRepository';
+import { UserMongoDBRepository } from '@src/repositories/userMongoDBRepository';
 
 export class SetupServer extends Server {
   constructor(private readonly port = 3000) {
@@ -40,9 +42,12 @@ export class SetupServer extends Server {
   }
 
   private setupControllers(): void {
-    const forecastController = new ForecastController();
-    const beachesController = new BeachesController();
-    const usersController = new UsersController();
+    const beachMongoDBRepository = new BeachMongoDBRepository();
+    const userMongoDBRepository = new UserMongoDBRepository();
+
+    const forecastController = new ForecastController(beachMongoDBRepository);
+    const beachesController = new BeachesController(beachMongoDBRepository);
+    const usersController = new UsersController(userMongoDBRepository);
 
     this.addControllers([
       forecastController,

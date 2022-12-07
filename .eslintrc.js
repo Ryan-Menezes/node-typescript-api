@@ -70,5 +70,6 @@ module.exports = {
     '@typescript-eslint/no-redeclare': 'off',
     "@typescript-eslint/no-extraneous-class": "off",
     'prefer-promise-reject-errors': 'off',
+    '@typescript-eslint/method-signature-style': 'off',
   }
 }
